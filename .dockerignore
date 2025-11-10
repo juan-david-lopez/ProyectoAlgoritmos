@@ -1,0 +1,127 @@
+# ============================================================================
+# .dockerignore - OPTIMIZADO PARA REDUCIR TAMAÑO
+# Excluye ~23 MB de outputs y datos pesados
+# ============================================================================
+
+# Git
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# Python cache y build
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+.claude/
+
+# ============================================================================
+# ARCHIVOS PESADOS - NO INCLUIR EN DOCKER (ahorra ~23 MB)
+# ============================================================================
+
+# Output folder completo (22.96 MB)
+output/
+outputs/
+
+# Data raw pesada (solo incluir sample)
+data/raw/uniquindio/
+data/raw/ieee/
+data/raw/scopus/
+data/raw/*.png
+data/raw/*.jpg
+data/cached/
+data/duplicates/
+
+# Scrapers data
+scrapers/data/raw/uniquindio/
+scrapers/data/processed/
+
+# Screenshots y capturas
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+!data/sample/**/*.png
+
+# Logs
+logs/*.log
+*.log
+*.log.*
+
+# Testing
+tests/
+pytest_cache/
+.pytest_cache/
+.coverage
+.tox/
+htmlcov/
+
+# Documentation (no necesaria en runtime)
+docs/
+*.md
+!README.md
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+nul
+
+# Credentials y secrets
+.env
+.env.*
+credentials.json
+secrets.yaml
+secrets.json
+config/secrets.yaml
+
+# OS específicos
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Archivos grandes
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.pdf
+
+# HTML interactivos pesados (dendrogramas)
+*.html
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Jupyter notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Keep only necessary files
+!requirements.txt
+!bibliometric-analysis/requirements.txt
+!config/*.yaml
+!config/*.yml

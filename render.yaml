@@ -1,0 +1,65 @@
+# ============================================================================
+# RENDER.YAML - Configuración para deployment en Render
+# ============================================================================
+
+services:
+  # Servicio web principal
+  - type: web
+    name: bibliometric-analysis
+    runtime: docker
+    region: oregon  # Región más cercana
+    plan: free      # Plan gratuito (cambiar a 'starter' si se necesita más recursos)
+    
+    # Docker configuration
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    # Variables de entorno
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: STREAMLIT_SERVER_PORT
+        value: "8501"
+      - key: STREAMLIT_SERVER_ADDRESS
+        value: "0.0.0.0"
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: "true"
+      - key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+        value: "false"
+    
+    # Health check endpoint
+    healthCheckPath: /_stcore/health
+    
+    # Auto deploy on push to main
+    autoDeploy: true
+    
+    # Resources (plan free)
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1  # 1 GB de disco persistente gratuito
+
+# ============================================================================
+# NOTAS DE DEPLOYMENT
+# ============================================================================
+# 
+# 1. Tamaño de la imagen: ~1 GB (dentro del límite de 2 GB)
+# 2. Plan free incluye:
+#    - 750 horas de runtime/mes
+#    - 0.5 GB RAM
+#    - 0.5 CPU
+#    - 1 GB disco persistente
+# 
+# 3. Para production (plan starter $7/mes):
+#    - RAM ilimitada
+#    - 1 CPU dedicada
+#    - 10 GB disco
+# 
+# 4. URL del deployment: https://bibliometric-analysis.onrender.com
+# 
+# 5. Para deploy:
+#    - Push código a GitHub
+#    - Conectar repo en Render dashboard
+#    - Render detectará automáticamente este archivo
+# 
+# ============================================================================
