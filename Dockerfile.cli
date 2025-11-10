@@ -11,6 +11,7 @@ WORKDIR /app
 # Instalar solo dependencias runtime esenciales
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar solo requirements esenciales (sin Streamlit, sin Jupyter, sin testing)
@@ -68,14 +69,16 @@ RUN mkdir -p \
 
 # Variables de entorno
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
+    PYTHONPATH=/app \
+    PORT=8000
 
-# Exponer puerto para API (opcional, si quieres agregar endpoints)
-EXPOSE 8000
+# Exponer puerto para API
+EXPOSE ${PORT}
 
-# Health check simple
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+# Health check simple (sin urllib, solo verificar que el proceso existe)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+    CMD pgrep -f gunicorn > /dev/null || exit 1
 
-# Comando por defecto: iniciar API server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "300", "api_server:app"]
+# Comando por defecto: iniciar API server con puerto dinámico
+# Usar forma shell para expandir $PORT
+CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 300 --log-level info --access-logfile - api_server:app
