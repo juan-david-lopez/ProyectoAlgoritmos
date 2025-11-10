@@ -81,4 +81,13 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
 
 # Comando por defecto: iniciar API server con puerto dinámico
 # Usar forma shell para expandir $PORT
-CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 300 --log-level info --access-logfile - api_server:app
+# Agregar logs para debug
+CMD echo "Starting gunicorn on port $PORT..." && \
+    gunicorn --bind 0.0.0.0:$PORT \
+    --workers 2 \
+    --timeout 300 \
+    --log-level debug \
+    --access-logfile - \
+    --error-logfile - \
+    --capture-output \
+    api_server:app

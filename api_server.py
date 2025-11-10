@@ -8,6 +8,11 @@ import subprocess
 import sys
 import os
 from pathlib import Path
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -16,11 +21,16 @@ MAIN_PY = Path(__file__).parent / "main.py"
 
 @app.route('/health', methods=['GET'])
 def health():
-    """Health check endpoint"""
+    """Health check endpoint for Railway"""
+    logger.info(f"Health check requested from {request.remote_addr}")
+    logger.info(f"Host header: {request.host}")
+    logger.info(f"Headers: {dict(request.headers)}")
+    
     return jsonify({
         "status": "healthy",
         "service": "bibliometric-cli",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "port": os.environ.get('PORT', 'not set')
     }), 200
 
 
