@@ -1,0 +1,52 @@
+# Dependencias básicas (obligatorias)
+numpy>=1.21.0
+pandas>=1.3.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+scikit-learn>=1.0.0
+psutil>=5.8.0
+scipy>=1.7.0
+tabulate>=0.9.0  # Para generación de tablas en Markdown
+
+# Dependencias para web scraping (portal Uniquindío)
+selenium>=4.15.0              # Web automation framework
+python-dotenv>=1.0.0          # Manejo de variables de entorno (.env)
+
+# Dependencias para extracción automática de términos
+nltk>=3.8.0         # Tokenización, lemmatización, POS tagging
+rake-nltk>=1.0.6    # RAKE keyword extraction
+spacy>=3.5.0        # NLP avanzado para TextRank
+pytextrank>=3.2.0   # TextRank implementation
+# Modelo spaCy (ejecutar después de instalar spacy):
+# python -m spacy download en_core_web_sm
+
+# Dependencias para evaluación de precisión con similitud semántica
+sentence-transformers>=2.2.0  # SBERT para similitud semántica
+matplotlib-venn>=0.11.9       # Diagramas de Venn para visualización
+# Nota: sentence-transformers requiere torch, se instalará automáticamente
+
+# Dependencias para visualizaciones avanzadas (Parte 5)
+wordcloud>=1.9.0              # Word clouds de términos
+tqdm>=4.65.0                  # Progress bars
+plotly>=5.14.0                # Dendrogramas interactivos y mapas geográficos
+folium>=0.14.0                # Mapas interactivos
+geopy>=2.3.0                  # Geocodificación de ubicaciones
+pycountry>=22.3.0             # Base de datos de países
+cartopy>=0.21.0               # Mapas estáticos cartográficos (requiere dependencias sistema)
+python-Levenshtein>=0.20.0    # Similitud de cadenas
+loguru>=0.7.0                 # Logging avanzado
+kaleido>=0.2.1                # Exportación de gráficos Plotly a PNG/PDF
+Pillow>=9.0.0                 # Procesamiento de imágenes y GIF creation
+reportlab>=4.0.0              # Generación profesional de PDF
+streamlit>=1.28.0             # Dashboard interactivo web
+
+# Dependencias para modelos de IA (opcionales)
+# Descomentar si se desea usar S-BERT y BERT
+# torch>=2.0.0
+# transformers>=4.30.0
+# sentence-transformers>=2.2.0
+
+# Dependencias de desarrollo (opcionales)
+pytest>=7.0.0          # Para ejecutar tests con pytest
+# memory-profiler>=0.60  # Para profiling detallado de memoria
+# jupyter>=1.0.0         # Para notebooks interactivos

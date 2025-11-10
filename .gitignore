@@ -1,0 +1,238 @@
+# ============================================================================
+# BIBLIOMETRIC ANALYSIS PROJECT - .gitignore
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Python
+# ----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ----------------------------------------------------------------------------
+# Virtual Environment
+# ----------------------------------------------------------------------------
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# ----------------------------------------------------------------------------
+# IDE & Editors
+# ----------------------------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ----------------------------------------------------------------------------
+# Data Files - Keep sample data, ignore large datasets
+# ----------------------------------------------------------------------------
+# Raw data from scrapers (large files)
+data/raw/*.json
+data/raw/*.csv
+data/raw/*.xlsx
+data/raw/*.bib
+data/raw/uniquindio/
+data/raw/ieee/
+data/raw/scopus/
+data/raw/semantic_scholar/
+
+# Processed data
+data/processed/*.json
+data/processed/*.csv
+data/processed/*.pkl
+
+# Duplicates
+data/duplicates/
+
+# Keep sample data for testing
+!data/sample/
+!data/sample/**/*
+
+# Keep structure with .gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/duplicates/.gitkeep
+
+# ----------------------------------------------------------------------------
+# Output Files - Ignore generated reports and visualizations
+# ----------------------------------------------------------------------------
+output/
+output/**/*
+outputs/
+outputs/**/*
+
+# Keep directory structure
+!output/.gitkeep
+!outputs/.gitkeep
+
+# ----------------------------------------------------------------------------
+# Scrapers Data - Keep code, ignore downloaded data
+# ----------------------------------------------------------------------------
+scrapers/data/raw/
+scrapers/data/processed/
+
+# Keep sample data
+!scrapers/data/sample/
+
+# ----------------------------------------------------------------------------
+# Environment Variables & Credentials - SECURITY CRITICAL
+# ----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+*.env
+config/.env
+config/.env.*
+credentials.json
+api_keys.yaml
+secrets.yaml
+secrets.json
+
+# ----------------------------------------------------------------------------
+# Logs
+# ----------------------------------------------------------------------------
+*.log
+logs/
+logs/**/*
+*.log.*
+nul
+
+# Keep logs directory
+!logs/.gitkeep
+
+# ----------------------------------------------------------------------------
+# Operating System
+# ----------------------------------------------------------------------------
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+.Trash-*
+
+# ----------------------------------------------------------------------------
+# Testing & Coverage
+# ----------------------------------------------------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.cover
+.tox/
+.cache/
+
+# ----------------------------------------------------------------------------
+# Temporary Files
+# ----------------------------------------------------------------------------
+*.tmp
+*.temp
+*.bak
+*.swp
+*.cache
+temp_*
+
+# ----------------------------------------------------------------------------
+# Web Scraping
+# ----------------------------------------------------------------------------
+# Browser drivers (download separately)
+drivers/
+chromedriver
+geckodriver
+*.exe
+
+# Selenium logs
+selenium.log
+geckodriver.log
+chromedriver.log
+
+# ----------------------------------------------------------------------------
+# Database Files
+# ----------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+
+# ----------------------------------------------------------------------------
+# Streamlit
+# ----------------------------------------------------------------------------
+.streamlit/secrets.toml
+.streamlit/credentials.toml
+
+# ----------------------------------------------------------------------------
+# Jupyter Notebook
+# ----------------------------------------------------------------------------
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# ----------------------------------------------------------------------------
+# Archives
+# ----------------------------------------------------------------------------
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ----------------------------------------------------------------------------
+# Documentation Build
+# ----------------------------------------------------------------------------
+docs/_build/
+site/
+
+# ----------------------------------------------------------------------------
+# IMPORTANT: Keep these files/directories
+# ----------------------------------------------------------------------------
+# Keep all Python source code
+!**/*.py
+
+# Keep configuration templates
+!config/*.yaml
+!config/*.yml
+!config/**/*.yaml
+
+# Keep documentation
+!docs/**/*.md
+!*.md
+!README*.md
+
+# Keep requirements
+!requirements.txt
+!**/requirements.txt
+
+# Keep sample/example data
+!data/sample/**/*
+!scrapers/data/sample/**/*
+
+# Keep .gitkeep files to preserve directory structure
+!**/.gitkeep

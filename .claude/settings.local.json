@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(dir:*)",
+      "Bash(tree:*)",
+      "Bash(python semantic_scholar_scraper.py:*)",
+      "Bash(python main.py:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

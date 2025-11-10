@@ -1,0 +1,640 @@
+# ============================================================================
+# BIBLIOMETRIC ANALYSIS - Configuration
+# ============================================================================
+# This file contains all configurable parameters for the bibliometric analysis
+# For sensitive data (API keys, credentials), use .env file instead
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Project Information
+# ----------------------------------------------------------------------------
+project:
+  name: "Bibliometric Analysis - Generative AI"
+  version: "1.0.0"
+  author: "Research Team"
+  description: "Analysis of scientific publications on generative artificial intelligence"
+
+# ----------------------------------------------------------------------------
+# Search Query Configuration
+# ----------------------------------------------------------------------------
+query:
+  # Primary search keywords
+  keywords: "inteligencia artificial generativa"
+
+  # Alternative queries for different databases
+  alternative_queries:
+    english: "generative artificial intelligence"
+    expanded: "(generative AI) OR (generative artificial intelligence) OR (GAI)"
+    technical: "(GPT) OR (DALL-E) OR (Stable Diffusion) OR (generative models)"
+
+  # Language settings
+  language: "es"
+  include_english: true
+
+  # Date range (null = no limit)
+  date_range:
+    start: "2018-01-01"  # Format: YYYY-MM-DD
+    end: null            # null = current date
+
+  # Document types to include
+  document_types:
+    - "article"
+    - "conference paper"
+    - "review"
+    - "book chapter"
+
+# ----------------------------------------------------------------------------
+# Data Sources Configuration
+# ----------------------------------------------------------------------------
+sources:
+  # IEEE Xplore
+  ieee:
+    enabled: true
+    max_results: 1000
+    base_url: "https://ieeexplore.ieee.org"
+    search_url: "https://ieeexplore.ieee.org/search/searchresult.jsp"
+
+    # Search parameters
+    params:
+      queryText: "${query.keywords}"
+      newsearch: true
+      sortType: "newest"
+
+    # Rate limiting
+    rate_limit:
+      requests_per_second: 1
+      delay_between_requests: 2  # seconds
+
+    # Fields to extract
+    fields:
+      - title
+      - authors
+      - abstract
+      - publication_year
+      - doi
+      - keywords
+      - citation_count
+      - publisher
+      - conference
+      - journal
+
+  # Scopus
+  scopus:
+    enabled: true
+    max_results: 1000
+    base_url: "https://api.elsevier.com/content/search/scopus"
+
+    # API configuration (key in .env)
+    api:
+      use_api: true
+      version: "v2"
+      # api_key loaded from environment variable SCOPUS_API_KEY
+
+    # Search parameters
+    params:
+      query: "${query.keywords}"
+      count: 25  # Results per page
+      sort: "-coverDate"  # Sort by date descending
+      field: "dc:title,dc:creator,prism:publicationName,prism:coverDate,dc:description,prism:doi,authkeywords,citedby-count,affiliation,prism:aggregationType"
+
+    # Rate limiting
+    rate_limit:
+      requests_per_second: 2
+      quota_per_week: 5000
+
+    # Fields mapping
+    field_mapping:
+      title: "dc:title"
+      authors: "dc:creator"
+      abstract: "dc:description"
+      publication_year: "prism:coverDate"
+      doi: "prism:doi"
+      keywords: "authkeywords"
+      citations: "citedby-count"
+      affiliation: "affiliation"
+
+  # Web of Science
+  web_of_science:
+    enabled: true
+    max_results: 1000
+    base_url: "https://www.webofscience.com"
+    api_url: "https://api.clarivate.com/api/wos"
+
+    # API configuration (key in .env)
+    api:
+      use_api: true
+      version: "v3"
+      # api_key loaded from environment variable WOS_API_KEY
+
+    # Search parameters
+    params:
+      databaseId: "WOS"
+      usrQuery: "${query.keywords}"
+      count: 100  # Results per page
+      firstRecord: 1
+
+    # Rate limiting
+    rate_limit:
+      requests_per_second: 1
+      throttle_seconds: 2
+
+# ----------------------------------------------------------------------------
+# Web Scraping Configuration
+# ----------------------------------------------------------------------------
+scraping:
+  # Browser settings
+  browser:
+    type: "chrome"  # chrome, firefox, edge
+    headless: true
+    window_size: [1920, 1080]
+
+  # Timeouts
+  timeouts:
+    page_load: 30      # seconds
+    element_wait: 10   # seconds
+    download: 60       # seconds
+
+  # Retry settings
+  retry:
+    max_attempts: 3
+    backoff_factor: 2  # Exponential backoff
+    retry_on_errors:
+      - "TimeoutException"
+      - "NoSuchElementException"
+      - "ConnectionError"
+
+  # User agent rotation
+  user_agents:
+    enabled: true
+    rotate: true
+
+# ----------------------------------------------------------------------------
+# Deduplication Configuration
+# ----------------------------------------------------------------------------
+deduplication:
+  # Enable/disable deduplication
+  enabled: true
+
+  # Algorithms to use (all will be computed)
+  algorithms:
+    levenshtein:
+      enabled: true
+      weight: 0.4
+
+    jaro_winkler:
+      enabled: true
+      weight: 0.3
+
+    jaccard:
+      enabled: true
+      weight: 0.3
+
+  # Similarity thresholds (0.0 - 1.0)
+  thresholds:
+    title_similarity: 0.85      # High threshold for titles
+    abstract_similarity: 0.80    # Slightly lower for abstracts
+    authors_similarity: 0.90     # Very high for author matching
+    doi_match: 1.0              # Exact match for DOI
+    combined_similarity: 0.75    # Weighted average threshold
+
+  # Fields to compare
+  comparison_fields:
+    primary:
+      - doi               # Exact match has highest priority
+      - title             # Most important for similarity
+      - authors           # Author list comparison
+
+    secondary:
+      - abstract          # Secondary verification
+      - publication_year  # Must be same year
+      - keywords          # Keyword overlap
+
+  # Matching strategy
+  strategy:
+    exact_doi_priority: true     # If DOI matches exactly, mark as duplicate
+    require_multiple_matches: true  # Require multiple fields to match
+    min_matching_fields: 2       # Minimum number of fields that must match
+
+  # Output settings
+  output:
+    save_duplicates: true
+    duplicate_file: "data/duplicates/duplicates.csv"
+    keep_first: true             # Keep first occurrence, remove rest
+    add_duplicate_id: true       # Add ID linking duplicates
+
+# ----------------------------------------------------------------------------
+# Preprocessing Configuration
+# ----------------------------------------------------------------------------
+preprocessing:
+  # Text normalization
+  text_normalization:
+    enabled: true
+    lowercase: true
+    remove_extra_whitespace: true
+    normalize_unicode: true      # NFD normalization
+    remove_accents: false        # Keep accents for Spanish
+
+  # Cleaning operations
+  cleaning:
+    remove_html_tags: true
+    remove_urls: true
+    remove_emails: true
+    remove_special_chars: false  # Keep for scientific notation
+    remove_numbers: false
+    remove_punctuation: false    # Keep for sentence structure
+
+  # Stop words
+  stopwords:
+    enabled: true
+    language: "spanish"
+    custom_stopwords:
+      - "et"
+      - "al"
+      - "fig"
+      - "table"
+      - "equation"
+    keep_scientific_terms: true
+
+  # Stemming/Lemmatization
+  text_processing:
+    method: "lemmatization"  # Options: stemming, lemmatization, none
+    language: "spanish"
+
+  # Missing data handling
+  missing_data:
+    strategy: "fill"  # Options: drop, fill, flag
+    fill_values:
+      title: "No title"
+      abstract: "No abstract available"
+      authors: "Unknown"
+      year: null
+
+  # Field validation
+  validation:
+    required_fields:
+      - title
+      - publication_year
+
+    field_types:
+      title: "string"
+      abstract: "string"
+      authors: "list"
+      publication_year: "integer"
+      doi: "string"
+      keywords: "list"
+
+# ----------------------------------------------------------------------------
+# Clustering Configuration
+# ----------------------------------------------------------------------------
+clustering:
+  # Feature extraction
+  feature_extraction:
+    method: "tfidf"  # Options: tfidf, word2vec, bert, sentence_transformers
+
+    # TF-IDF settings
+    tfidf:
+      max_features: 1000
+      min_df: 2              # Minimum document frequency
+      max_df: 0.8            # Maximum document frequency
+      ngram_range: [1, 2]    # Unigrams and bigrams
+      use_idf: true
+
+    # Sentence transformers (if method = sentence_transformers)
+    sentence_transformers:
+      model: "paraphrase-multilingual-MiniLM-L12-v2"
+      batch_size: 32
+      normalize_embeddings: true
+
+  # Dimensionality reduction
+  dimensionality_reduction:
+    enabled: true
+    method: "pca"  # Options: pca, tsne, umap
+    n_components: 50
+
+    # t-SNE specific settings
+    tsne:
+      perplexity: 30
+      n_iter: 1000
+      random_state: 42
+
+    # UMAP specific settings
+    umap:
+      n_neighbors: 15
+      min_dist: 0.1
+      metric: "cosine"
+
+  # Clustering algorithms
+  algorithms:
+    # K-Means
+    kmeans:
+      enabled: true
+      n_clusters: 5
+      max_iter: 300
+      n_init: 10
+      random_state: 42
+      algorithm: "auto"  # auto, full, elkan
+
+      # Elbow method for optimal k
+      find_optimal_k:
+        enabled: true
+        k_range: [2, 10]
+        method: "silhouette"  # elbow, silhouette, gap_statistic
+
+    # DBSCAN
+    dbscan:
+      enabled: true
+      eps: 0.5
+      min_samples: 5
+      metric: "euclidean"
+      algorithm: "auto"
+      leaf_size: 30
+
+      # Auto-tuning
+      auto_tune:
+        enabled: true
+        eps_range: [0.1, 1.0]
+        eps_steps: 10
+
+    # Hierarchical Clustering
+    hierarchical:
+      enabled: true
+      n_clusters: 5
+      linkage: "ward"      # ward, complete, average, single
+      affinity: "euclidean"
+
+      # Dendrogram settings
+      dendrogram:
+        create: true
+        max_d: null        # Cut height (null = use n_clusters)
+
+  # Clustering evaluation
+  evaluation:
+    metrics:
+      - "silhouette_score"
+      - "calinski_harabasz_score"
+      - "davies_bouldin_score"
+
+    # Save evaluation results
+    save_metrics: true
+    metrics_file: "outputs/clustering_metrics.json"
+
+  # Features to use for clustering
+  features:
+    text_fields:
+      - title
+      - abstract
+      - keywords
+
+    metadata_fields:
+      - publication_year
+      - citation_count
+
+    # Feature weights
+    weights:
+      title: 0.4
+      abstract: 0.5
+      keywords: 0.1
+
+# ----------------------------------------------------------------------------
+# Visualization Configuration
+# ----------------------------------------------------------------------------
+visualization:
+  # General settings
+  general:
+    style: "seaborn"           # matplotlib style
+    color_palette: "Set2"      # Color scheme
+    font_family: "Arial"
+    font_size: 12
+    title_size: 16
+    label_size: 14
+
+  # Output settings
+  output:
+    format: "png"              # png, svg, pdf
+    dpi: 300
+    figure_size: [12, 8]
+    save_format: "both"        # png, svg, both
+    transparent_background: false
+
+  # Chart types to generate
+  charts:
+    # Time series
+    temporal_trends:
+      enabled: true
+      chart_type: "line"       # line, bar, area
+      group_by: "year"
+      show_trend_line: true
+
+    # Geographic distribution
+    country_distribution:
+      enabled: true
+      chart_type: "choropleth"  # bar, pie, choropleth, treemap
+      top_n: 20
+      show_percentages: true
+
+    # Source analysis
+    source_distribution:
+      enabled: true
+      chart_type: "bar"        # bar, pie, treemap
+      top_n: 15
+      horizontal: true
+
+    # Network analysis
+    coauthorship_network:
+      enabled: true
+      layout: "spring"         # spring, circular, kamada_kawai
+      node_size_by: "degree"   # degree, betweenness, citations
+      edge_width_by: "weight"
+      min_collaborations: 2
+      top_n_authors: 50
+
+    # Word cloud
+    keyword_cloud:
+      enabled: true
+      max_words: 100
+      background_color: "white"
+      colormap: "viridis"
+      width: 1600
+      height: 800
+
+    # Clustering visualization
+    cluster_visualization:
+      enabled: true
+      plot_type: "scatter"     # scatter, 3d_scatter, heatmap
+      reduction_method: "tsne"  # pca, tsne, umap
+      show_centroids: true
+      show_labels: true
+
+    # Citation analysis
+    citation_distribution:
+      enabled: true
+      chart_type: "histogram"  # histogram, box, violin
+      bins: 20
+      show_outliers: true
+
+    # Journal/Conference analysis
+    venue_analysis:
+      enabled: true
+      chart_type: "bar"
+      top_n: 20
+      group_by: "type"         # type, impact_factor
+
+  # Interactive visualizations
+  interactive:
+    enabled: true
+    library: "plotly"          # plotly, bokeh
+    export_html: true
+    include_filters: true
+
+# ----------------------------------------------------------------------------
+# Report Generation Configuration
+# ----------------------------------------------------------------------------
+report:
+  # Report metadata
+  metadata:
+    title: "Análisis Bibliométrico: Inteligencia Artificial Generativa"
+    subtitle: "Análisis de Publicaciones Científicas"
+    author: "Equipo de Investigación"
+    institution: "Universidad"
+    date: "auto"               # auto = current date
+    version: "1.0"
+
+  # Report format
+  format:
+    type: "pdf"                # pdf, html, docx
+    page_size: "A4"
+    orientation: "portrait"    # portrait, landscape
+    margins: [2.5, 2.5, 2.5, 2.5]  # cm [top, right, bottom, left]
+
+  # Report sections
+  sections:
+    cover_page: true
+    table_of_contents: true
+    executive_summary: true
+    methodology: true
+    results: true
+    visualizations: true
+    conclusions: true
+    references: true
+    appendices: true
+
+  # Content settings
+  content:
+    include_charts: true
+    include_tables: true
+    include_statistics: true
+    include_raw_data: false
+
+    # Statistics to include
+    statistics:
+      - "total_publications"
+      - "publications_per_year"
+      - "top_authors"
+      - "top_countries"
+      - "top_sources"
+      - "citation_metrics"
+      - "keyword_frequency"
+      - "cluster_summary"
+
+  # Styling
+  styling:
+    color_scheme: "professional"  # professional, academic, modern
+    font:
+      body: "Times New Roman"
+      heading: "Arial"
+      code: "Courier New"
+
+    heading_sizes:
+      h1: 18
+      h2: 16
+      h3: 14
+
+  # Output
+  output:
+    filename: "bibliometric_analysis_report"
+    path: "outputs/reports/"
+    include_timestamp: true
+    overwrite: false
+
+# ----------------------------------------------------------------------------
+# File Paths
+# ----------------------------------------------------------------------------
+paths:
+  # Data directories
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  duplicates: "data/duplicates"
+
+  # Output directories
+  outputs: "outputs"
+  reports: "outputs/reports"
+  visualizations: "outputs/visualizations"
+
+  # Log directory
+  logs: "logs"
+
+  # Cache directory
+  cache: ".cache"
+
+  # Models directory (for NLP models)
+  models: "models"
+
+# ----------------------------------------------------------------------------
+# Logging Configuration
+# ----------------------------------------------------------------------------
+logging:
+  # Log level
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+
+  # Log files
+  files:
+    main: "logs/bibliometric_analysis.log"
+    scraper: "logs/scraper.log"
+    preprocessing: "logs/preprocessing.log"
+    clustering: "logs/clustering.log"
+
+  # Rotation
+  rotation:
+    enabled: true
+    max_bytes: 10485760  # 10 MB
+    backup_count: 5
+
+  # Console output
+  console:
+    enabled: true
+    level: "INFO"
+    colored: true
+
+# ----------------------------------------------------------------------------
+# Performance & Optimization
+# ----------------------------------------------------------------------------
+performance:
+  # Parallel processing
+  parallel:
+    enabled: true
+    n_jobs: -1              # -1 = use all CPUs
+    backend: "loky"         # loky, threading, multiprocessing
+
+  # Caching
+  cache:
+    enabled: true
+    backend: "disk"         # memory, disk
+    ttl: 86400              # Time to live in seconds (24 hours)
+
+  # Memory management
+  memory:
+    chunk_size: 1000        # Process data in chunks
+    low_memory_mode: false
+
+# ----------------------------------------------------------------------------
+# Miscellaneous
+# ----------------------------------------------------------------------------
+misc:
+  random_seed: 42           # For reproducibility
+  verbose: true
+  debug_mode: false
+  save_intermediate_results: true

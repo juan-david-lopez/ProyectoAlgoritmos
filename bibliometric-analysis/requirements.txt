@@ -1,0 +1,110 @@
+# ============================================================================
+# BIBLIOMETRIC ANALYSIS - COMPLETE DEPENDENCIES
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Data Manipulation and Analysis
+# ----------------------------------------------------------------------------
+pandas>=2.0.0
+numpy>=1.24.0
+openpyxl>=3.1.0              # Excel file support
+
+# ----------------------------------------------------------------------------
+# Web Scraping
+# ----------------------------------------------------------------------------
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+selenium==4.15.2             # Web automation framework
+webdriver-manager==4.0.1     # Automatic webdriver management
+lxml>=4.9.0
+playwright>=1.34.0           # Playwright browser automation
+playwright-stealth>=1.5.0    # Stealth helper for Playwright
+
+# ----------------------------------------------------------------------------
+# Bibliographic Data Parsing
+# ----------------------------------------------------------------------------
+rispy>=0.7.1                 # RIS format parser (modern alternative)
+python-RISparser>=1.0.0      # RIS format parser (legacy support)
+bibtexparser>=1.4.0          # BibTeX parser
+
+# ----------------------------------------------------------------------------
+# Natural Language Processing (NLP)
+# ----------------------------------------------------------------------------
+nltk>=3.8.0
+spacy>=3.7.0                 # Advanced NLP
+python-Levenshtein>=0.21.0   # String similarity
+jellyfish>=1.0.0             # Additional string similarity algorithms
+
+# ----------------------------------------------------------------------------
+# Machine Learning & Clustering
+# ----------------------------------------------------------------------------
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# ----------------------------------------------------------------------------
+# Deep Learning & Transformers
+# ----------------------------------------------------------------------------
+transformers>=4.35.0         # Hugging Face transformers
+sentence-transformers>=2.2.0 # Sentence embeddings
+torch>=2.1.0                 # PyTorch (CPU version)
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# ----------------------------------------------------------------------------
+# Visualization
+# ----------------------------------------------------------------------------
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0
+wordcloud>=1.9.0             # Word cloud generation
+folium>=0.15.0               # Interactive maps
+networkx>=3.1                # Network graphs
+kaleido>=0.2.1               # Static image export for plotly
+
+# ----------------------------------------------------------------------------
+# Report Generation & Export
+# ----------------------------------------------------------------------------
+reportlab>=4.0.0
+fpdf>=1.7.2
+pdfkit>=1.0.0                # HTML to PDF (requires wkhtmltopdf)
+Pillow>=10.0.0               # Image processing
+
+# ----------------------------------------------------------------------------
+# Web Application
+# ----------------------------------------------------------------------------
+streamlit>=1.28.0
+
+# ----------------------------------------------------------------------------
+# Configuration & Utilities
+# ----------------------------------------------------------------------------
+pyyaml>=6.0
+python-dotenv>=1.0.0
+tqdm>=4.65.0                 # Progress bars
+loguru>=0.7.0                # Advanced logging (REQUIRED for new scrapers)
+
+# ----------------------------------------------------------------------------
+# Data Validation & Schema
+# ----------------------------------------------------------------------------
+jsonschema>=4.17.0
+
+# ----------------------------------------------------------------------------
+# Jupyter Support
+# ----------------------------------------------------------------------------
+jupyter>=1.0.0
+notebook>=7.0.0
+ipywidgets>=8.0.0
+ipykernel>=6.25.0
+
+# ----------------------------------------------------------------------------
+# Testing & Quality
+# ----------------------------------------------------------------------------
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.0.0                # Code formatting
+flake8>=6.0.0                # Linting
+
+# ----------------------------------------------------------------------------
+# Additional Utilities
+# ----------------------------------------------------------------------------
+python-dateutil>=2.8.0
+pytz>=2023.3
+chardet>=5.0.0               # Character encoding detection
