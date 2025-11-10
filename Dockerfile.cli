@@ -12,6 +12,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     procps \
+    bash \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar solo requirements esenciales (sin Streamlit, sin Jupyter, sin testing)
@@ -59,6 +60,10 @@ COPY bibliometric-analysis/main.py ./
 COPY bibliometric-analysis/config/ ./config/
 COPY bibliometric-analysis/src/ ./src/
 COPY api_server.py ./
+COPY start.sh ./
+
+# Hacer el script ejecutable
+RUN chmod +x start.sh
 
 # Crear directorios necesarios
 RUN mkdir -p \
@@ -79,15 +84,5 @@ EXPOSE ${PORT}
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
     CMD pgrep -f gunicorn > /dev/null || exit 1
 
-# Comando por defecto: iniciar API server con puerto dinámico
-# Usar forma shell para expandir $PORT
-# Agregar logs para debug
-CMD echo "Starting gunicorn on port $PORT..." && \
-    gunicorn --bind 0.0.0.0:$PORT \
-    --workers 2 \
-    --timeout 300 \
-    --log-level debug \
-    --access-logfile - \
-    --error-logfile - \
-    --capture-output \
-    api_server:app
+# Comando por defecto: ejecutar script de inicio
+CMD ["bash", "start.sh"]
