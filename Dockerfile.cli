@@ -1,0 +1,81 @@
+# ============================================================================
+# DOCKERFILE OPTIMIZADO - SOLO CLI (main.py)
+# Sin Streamlit, sin interfaz, solo terminal
+# Tamaño estimado: ~800 MB (mucho más ligero)
+# ============================================================================
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Instalar solo dependencias runtime esenciales
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar solo requirements esenciales (sin Streamlit, sin Jupyter, sin testing)
+COPY bibliometric-analysis/requirements.txt ./requirements-full.txt
+
+# Crear requirements.txt minimalista (solo lo necesario para main.py)
+RUN echo "pandas>=2.0.0\n\
+numpy>=1.24.0\n\
+openpyxl>=3.1.0\n\
+requests>=2.31.0\n\
+beautifulsoup4>=4.12.0\n\
+selenium==4.15.2\n\
+webdriver-manager==4.0.1\n\
+lxml>=4.9.0\n\
+rispy>=0.7.1\n\
+bibtexparser>=1.4.0\n\
+nltk>=3.8.0\n\
+python-Levenshtein>=0.21.0\n\
+jellyfish>=1.0.0\n\
+scikit-learn>=1.3.0\n\
+scipy>=1.11.0\n\
+matplotlib>=3.7.0\n\
+seaborn>=0.12.0\n\
+plotly>=5.14.0\n\
+wordcloud>=1.9.0\n\
+networkx>=3.1\n\
+reportlab>=4.0.0\n\
+Pillow>=10.0.0\n\
+pyyaml>=6.0\n\
+python-dotenv>=1.0.0\n\
+tqdm>=4.65.0\n\
+loguru>=0.7.0\n\
+jsonschema>=4.17.0\n\
+python-dateutil>=2.8.0\n\
+pytz>=2023.3\n\
+chardet>=5.0.0\n\
+flask>=3.0.0\n\
+gunicorn>=21.2.0" > requirements-minimal.txt
+
+# Instalar solo dependencias mínimas
+RUN pip install --no-cache-dir -r requirements-minimal.txt
+
+# Copiar código fuente (solo lo necesario para main.py)
+COPY bibliometric-analysis/main.py ./
+COPY bibliometric-analysis/config/ ./config/
+COPY bibliometric-analysis/src/ ./src/
+COPY api_server.py ./
+
+# Crear directorios necesarios
+RUN mkdir -p \
+    data/raw \
+    data/processed \
+    outputs \
+    logs
+
+# Variables de entorno
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Exponer puerto para API (opcional, si quieres agregar endpoints)
+EXPOSE 8000
+
+# Health check simple
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+
+# Comando por defecto: iniciar API server
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "300", "api_server:app"]

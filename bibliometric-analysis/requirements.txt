@@ -24,7 +24,7 @@ playwright-stealth>=1.5.0    # Stealth helper for Playwright
 # Bibliographic Data Parsing
 # ----------------------------------------------------------------------------
 rispy>=0.7.1                 # RIS format parser (modern alternative)
-python-RISparser>=1.0.0      # RIS format parser (legacy support)
+# python-RISparser>=1.0.0    # REMOVED: Not compatible with Python 3.11+
 bibtexparser>=1.4.0          # BibTeX parser
 
 # ----------------------------------------------------------------------------

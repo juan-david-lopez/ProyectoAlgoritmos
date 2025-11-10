@@ -1,0 +1,56 @@
+# ============================================================================
+# RENDER.YAML - CLI VERSION (Sin interfaz gráfica)
+# ============================================================================
+
+services:
+  # Servicio web con API REST simple
+  - type: web
+    name: bibliometric-cli
+    runtime: docker
+    dockerfilePath: ./Dockerfile.cli
+    dockerContext: .
+    region: oregon
+    plan: free
+    
+    # Variables de entorno
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PORT
+        value: "8000"
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Auto deploy
+    autoDeploy: true
+    
+    # Disco persistente para datos
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1
+
+# ============================================================================
+# INSTRUCCIONES DE USO
+# ============================================================================
+#
+# Esta versión NO tiene interfaz web (sin Streamlit)
+# Se ejecuta vía comandos:
+#
+# 1. Ejecutar pipeline completo:
+#    docker run bibliometric-cli:latest python main.py --mode full
+#
+# 2. Solo scraping:
+#    docker run bibliometric-cli:latest python main.py --mode scrape
+#
+# 3. Solo clustering:
+#    docker run bibliometric-cli:latest python main.py --mode cluster
+#
+# 4. Ver información:
+#    docker run bibliometric-cli:latest python main.py --mode info
+#
+# 5. Modo interactivo:
+#    docker run -it bibliometric-cli:latest python main.py
+#
+# ============================================================================
