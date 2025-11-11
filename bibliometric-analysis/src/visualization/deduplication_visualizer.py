@@ -228,9 +228,10 @@ class DeduplicationVisualizer:
                      edgecolor='black', linewidth=1.5)
         
         # Añadir valores encima
+        total = sum(values)
         for bar, value in zip(bars, values):
             height = bar.get_height()
-            percentage = value / sum(values) * 100
+            percentage = (value / total * 100) if total > 0 else 0
             ax.text(bar.get_x() + bar.get_width()/2., height + 2,
                    f'{value:,}\n({percentage:.1f}%)',
                    ha='center', va='bottom', fontsize=12, fontweight='bold')
@@ -375,8 +376,9 @@ class DeduplicationVisualizer:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 """
+            total_dups = summary['duplicates_count']
             for method, count in report['by_detection_method'].items():
-                percentage = count / summary['duplicates_count'] * 100
+                percentage = (count / total_dups * 100) if total_dups > 0 else 0
                 report_text += f"  • {method:30} {count:,} duplicados ({percentage:.1f}%)\n"
         
         if 'algorithms' in report:

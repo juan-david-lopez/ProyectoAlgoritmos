@@ -10,20 +10,23 @@ Classical Algorithms:
 4. Character N-gram Similarity - Fuzzy matching based
 
 AI-Based Algorithms:
-5. SBERT Similarity - Sentence-BERT embeddings
-6. BERT Transformer Similarity - BERT contextual embeddings
+5. Word Embeddings (Word2Vec/GloVe) - Static word embeddings
+6. SBERT Similarity - Sentence-BERT embeddings (contextualized)
+7. BERT Transformer Similarity - BERT contextual embeddings
+
+Note: Total of 7 algorithms (4 classical + 3 AI-based)
 
 Usage (Class-based):
-    from src.algorithms.similarity import LevenshteinSimilarity, SBERTSimilarity
+    from src.algorithms.similarity import LevenshteinSimilarity, WordEmbeddingSimilarity
 
     calc = LevenshteinSimilarity()
     similarity = calc.compute_similarity("text1", "text2")
 
 Usage (Standalone functions):
-    from src.algorithms.similarity import sbert_similarity, bert_similarity
+    from src.algorithms.similarity import word_embedding_similarity, sbert_similarity
 
     # Quick similarity calculation
-    sim = sbert_similarity("The cat sits", "A feline rests")
+    sim = word_embedding_similarity("machine learning", "artificial intelligence")
     print(f"Semantic similarity: {sim:.3f}")
 """
 
@@ -32,6 +35,7 @@ from .levenshtein_similarity import LevenshteinSimilarity
 from .tfidf_cosine_similarity import TfidfCosineSimilarity
 from .jaccard_similarity import JaccardSimilarity
 from .ngram_similarity import CharacterNgramSimilarity
+from .word_embedding_similarity import WordEmbeddingSimilarity, word_embedding_similarity
 from .sbert_similarity import SBERTSimilarity, sbert_similarity
 from .transformer_similarity import TransformerSimilarity, bert_similarity
 from .similarity_comparator import SimilarityComparator
@@ -42,10 +46,12 @@ __all__ = [
     'TfidfCosineSimilarity',
     'JaccardSimilarity',
     'CharacterNgramSimilarity',
+    'WordEmbeddingSimilarity',
     'SBERTSimilarity',
     'TransformerSimilarity',
     'SimilarityComparator',
     # Standalone functions
+    'word_embedding_similarity',
     'sbert_similarity',
     'bert_similarity',
 ]
