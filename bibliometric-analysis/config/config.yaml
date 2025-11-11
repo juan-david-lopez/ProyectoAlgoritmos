@@ -592,10 +592,10 @@ logging:
 
   # Log files
   files:
-    main: "logs/bibliometric_analysis.log"
-    scraper: "logs/scraper.log"
-    preprocessing: "logs/preprocessing.log"
-    clustering: "logs/clustering.log"
+    main: "bibliometric_analysis.log"
+    scraper: "scraper.log"
+    preprocessing: "preprocessing.log"
+    clustering: "clustering.log"
 
   # Rotation
   rotation:
